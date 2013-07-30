@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Scene xmlns="clr-namespace:Stormancer.Core;assembly=Stormancer.Core" xmlns:app="clr-namespace:Stormancer.Samples.SpaceRings;assembly=Stormancer.Samples.SpaceRings" >
+    <Scene.Behaviors>
+        <app:Sync3dBehavior/>
+    </Scene.Behaviors>
+</Scene>
