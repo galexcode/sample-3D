@@ -1,0 +1,229 @@
+﻿html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    font-family: "Segoe UI", "Verdana", "Arial";
+    -ms-touch-action: none;
+}
+
+canvas {
+    -ms-touch-action: none;
+}
+
+.hidden {
+    display: none;
+}
+
+#fullscreen {
+    border: 1px solid #888888;
+    background-color: #DEDEDE;
+    color: #888888;
+}
+
+#fullscreen:hover {
+    background-color: #EEEEEE;
+}
+
+#fullscreen:active {
+    transform: scale(0.98);
+    -webkit-transform: scale(0.98);
+}
+
+#notSupported {
+    color: red;
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    margin-top: -30px;
+    background-color: #EEEEEE;
+    border: 1px solid #888888;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#rootDiv {
+    width: 100%;
+    height: 100%;
+}
+
+#renderCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+#fps {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 0 black;
+}
+
+#stats {
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    font-size: 14px;
+    color: white;
+    text-align: right;
+    text-shadow: 2px 2px 0 black;
+}
+
+#status {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    font-size: 14px;
+    color: white;
+    text-shadow: 2px 2px 0 black;
+}
+
+.title {
+    position: absolute;
+    right: -200px;
+    width: 180px;
+    padding: 20px;
+    height: 45px;
+    top: 20px;
+    font-size: 35px;
+    font-weight: 900;
+    color: #888888;
+    background-color: #EEEEEE;
+    border-bottom-right-radius: 10px 10px;
+    border-top-right-radius: 10px 10px;
+    text-align: right;
+}
+
+#clickableTitle {
+    background-color: transparent;
+}
+
+#aboutPanel {
+    position: absolute;
+    height: 100%;
+    width: 460px;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    transition: transform 0.25s ease-in-out;
+    background-color: #EEEEEE;
+    color: #888888;
+    padding: 20px;
+    transform: translateX(-500px);
+    -webkit-transition: -webkit-transform 0.25s ease-in-out;
+    -webkit-transform: translateX(-500px);
+}
+
+#aboutParagraph {
+    position: absolute;
+    height: 100%;
+    width: 480px;
+    overflow-y: auto;
+}
+
+#controlPanel {
+    position: absolute;
+    height: 250px;
+    bottom: 0px;
+    width: 500px;
+    left: 50%;
+    margin-left: -250px;
+    z-index: 1;
+    transition: transform 0.25s ease-in-out;
+    transform: translateY(250px);
+    -webkit-transition: -webkit-transform 0.25s ease-in-out;
+    -webkit-transform: translateY(250px);
+}
+
+.tag {
+    position: absolute;
+    background-color: #EEEEEE;
+    height: 40px;
+    width: 150px;
+    left: 50%;
+    padding: 5px;
+    color: #888888;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: -75px;
+    text-align: center;
+    top: -40px;
+    border-top-left-radius: 10px 10px;
+    border-top-right-radius: 10px 10px;
+}
+
+#clickableTag {
+    background-color: transparent;
+}
+
+#controlsZone {
+    width: 100%;
+    height: 100%;
+    background-color: #EEEEEE;
+    color: #888888;
+    padding: 20px;
+    border-top-left-radius: 10px 10px;
+    border-top-right-radius: 10px 10px;
+}
+
+#loadingBack {
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -30px;
+    background-color: #EEEEEE;
+    border: 1px solid #888888;
+    transition: transform 0.25s ease-in-out;
+    -webkit-transition: -webkit-transform 0.25s ease-in-out;
+}
+
+#loadingText {
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -30px;
+    color: #888888;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 30px;
+    font-weight: bold;
+    transition: transform 0.25s ease-in-out;
+    -webkit-transition: -webkit-transform 0.25s ease-in-out;
+}
+
+.loadingBack {
+    transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+}
+
+.loadingText {
+    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+}
+
+#leftPart {
+    position: absolute;
+    left: 20px;
+    top: 10px;
+    height: 40%;
+    width: 30%;
+}
+
+#rightPart {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    height: 40%;
+    width: 50%;
+}

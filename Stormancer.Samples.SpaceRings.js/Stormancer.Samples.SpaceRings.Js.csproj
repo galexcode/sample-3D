@@ -57,6 +57,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\index.css" />
     <Content Include="Flare.png" />
     <Content Include="Omega Crusher.htm" />
     <Content Include="Omega Crusher_files\babylon.gamefx.assetsmanager.js" />

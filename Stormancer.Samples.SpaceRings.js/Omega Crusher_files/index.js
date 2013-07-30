@@ -89,8 +89,6 @@ var onload = function () {
 
         }
         
-        gameWorld.assetsManager.loadAllEntitiesAsync(sceneReady);
-        
         function sceneReady() {
             gameWorld.addKeyboard().connectTo(mainShip);
             gameWorld.Keyboard.activateRotationOnAxisRelativeToMesh();
@@ -135,6 +133,8 @@ var onload = function () {
             //End Loading
             gameWorld.dashboard.endLoading();
         }
+
+        gameWorld.assetsManager.loadAllEntitiesAsync(sceneReady);
 
         // Resize
         window.addEventListener("resize", function () {
