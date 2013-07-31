@@ -12,24 +12,44 @@ namespace Stormancer.Samples.SpaceRings
         #region Behavior
         protected override void OnAttached()
         {
+            //AssociatedObject.RegisterRoute<PositionUpdate>("move", MoveSent);
+
             AssociatedObject.OnConnect.Add(OnConnect);
             AssociatedObject.OnDisconnect.Add(OnDisconnect);
-
-            //AssociatedObject.RegisterRoute<string>("message", OnMessage);
-            //AssociatedObject.RegisterApiRoute<string>("system", OnSystemMessage);
         }
+
+        //private Task MoveSent(RequestMessage<PositionUpdate> message)
+        //{
+        //    var id = message.Connection.GetUserData<string>();
+        //    var msg = message.Content;
+        //    msg.UserId = id;
+
+        //    return AssociatedObject.Broadcast("move", msg);
+        //}
 
         protected override void OnDetached()
         {
         }
+
         #endregion
 
         private async Task OnConnect(IConnection connection)
         {
+            var userId = connection.GetUserData<string>();
+            await connection.Send("User.Add", this.AssociatedObject.Connections
+                .Where(con => con != connection)
+                .Select(con => con.GetUserData<string>()).ToArray());
+
+            await AssociatedObject.Broadcast("User.Add", new[] { userId });
         }
 
         private async Task OnDisconnect(IConnection connection)
         {
+            var id = connection.GetUserData<string>();
+
+            await AssociatedObject.Broadcast("User.Remove", id);
         }
+
+
     }
 }

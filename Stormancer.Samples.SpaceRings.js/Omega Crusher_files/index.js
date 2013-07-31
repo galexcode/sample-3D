@@ -1,8 +1,15 @@
-﻿var gameWorld;
+﻿/// <reference path="./scripts/jquery.stormancer.js" />
+
+
+var gameWorld;
 var mainShip;
 var ring;
 
 var onload = function () {
+    var accountid = "6a575873-eed0-4564-af84-58b516b1f624";
+    var appname = "spacerings";
+    var scenename = "flyingspace1";
+
     var canvas = document.getElementById("renderCanvas");
 
     // UI
@@ -13,14 +20,13 @@ var onload = function () {
     if (!BABYLON.Engine.isSupported()) {
         document.getElementById("notSupported").className = "";
     } else {
-       
+
 
         gameWorld = new BABYLON.GameFX.GameWorld("renderCanvas");
         mainShip = new SpaceRing.MainShip(false, gameWorld);
         gameWorld.setCameraToFollowEntity(mainShip, new BABYLON.Vector3(0, 10, 30));
 
         ring = new SpaceRing.Ring(true, gameWorld);
-
 
         gameWorld.assetsManager.push(mainShip);
         gameWorld.assetsManager.push(ring);
@@ -88,7 +94,7 @@ var onload = function () {
             particleSystem2.start();
 
         }
-        
+
         function sceneReady() {
             gameWorld.addKeyboard().connectTo(mainShip);
             gameWorld.Keyboard.activateRotationOnAxisRelativeToMesh();
@@ -104,15 +110,47 @@ var onload = function () {
 
             //gameWorld.Keyboard.setRotationSpeed(50);
 
-
-
             gameWorld.startGameLoop();
+
+            var s4 = function () {
+                return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+            };
+
+            var myid = s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
+            var avatar = 1 + (Math.random() * 20 | 0);
+
+            //var client = $.stormancer(Stormancer.Configuration.forAccount(accountid, appname));
+            var client = $.stormancer(Stormancer.Configuration.forLocalDev(appname));
+
+            client.getPublicScene(scenename, myid, function (scene) {
+                var players = {};
+
+                scene.onMessage('User.Add', function (users) {
+                    for (var i = 0; i < users.length; i++) {
+                        if (users[i] != myid) {
+                            players[users[i]] = null;
+                        }
+                    }
+                });
+
+                scene.onMessage('User.Remove', function (id) {
+                    delete players[id];
+                });
+
+                scene.connect(function () {
+                    setInterval(function () {
+                        //send position
+                    }, 20);
+                });
+            });
+
+
 
             LoadParticules();
 
             //Create Rings
             var ring;
-            
+
             for (var i = 0; i < 10; i++) {
                 ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
                 var x = Math.floor((Math.random() * 1000) + 1) - 500;
@@ -128,7 +166,7 @@ var onload = function () {
 
                 //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
             }
-           
+
 
             //End Loading
             gameWorld.dashboard.endLoading();

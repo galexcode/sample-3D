@@ -77,6 +77,7 @@
     <Content Include="Scenes\Gate\GateDiffus.png" />
     <Content Include="Scenes\Gate\GateDiffusOn.png" />
     <Content Include="Scenes\Spaceship\0.png" />
+    <Content Include="scripts\jquery.stormancer.js" />
     <Content Include="water_ice.jpg" />
     <Content Include="Web.config" />
   </ItemGroup>
