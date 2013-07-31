@@ -74,6 +74,7 @@
     <Content Include="Omega Crusher_files\index.js" />
     <Content Include="Omega Crusher_files\mainship.js" />
     <Content Include="Omega Crusher_files\ring.js" />
+    <Content Include="Omega Crusher_files\ship.js" />
     <Content Include="Scenes\Gate\GateDiffus.png" />
     <Content Include="Scenes\Gate\GateDiffusOn.png" />
     <Content Include="Scenes\Spaceship\0.png" />

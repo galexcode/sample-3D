@@ -4,6 +4,7 @@
 var gameWorld;
 var mainShip;
 var ring;
+var ship;
 
 var onload = function () {
     var accountid = "6a575873-eed0-4564-af84-58b516b1f624";
@@ -24,13 +25,15 @@ var onload = function () {
 
         gameWorld = new BABYLON.GameFX.GameWorld("renderCanvas");
         mainShip = new SpaceRing.MainShip(false, gameWorld);
+
         gameWorld.setCameraToFollowEntity(mainShip, new BABYLON.Vector3(0, 10, 30));
 
         ring = new SpaceRing.Ring(true, gameWorld);
+        ship = new SpaceRing.Ship(true, gameWorld);
 
         gameWorld.assetsManager.push(mainShip);
         gameWorld.assetsManager.push(ring);
-
+        gameWorld.assetsManager.push(ship);
 
         //Ground
         var ground = BABYLON.Mesh.CreatePlane("plane", 1000, gameWorld.scene);
@@ -96,6 +99,10 @@ var onload = function () {
         }
 
         function sceneReady() {
+
+
+            gameWorld.startGameLoop();
+
             gameWorld.addKeyboard().connectTo(mainShip);
             gameWorld.Keyboard.activateRotationOnAxisRelativeToMesh();
             gameWorld.Keyboard.reverseUpDown = true;
@@ -110,8 +117,6 @@ var onload = function () {
 
             //gameWorld.Keyboard.setRotationSpeed(50);
 
-            gameWorld.startGameLoop();
-
             var s4 = function () {
                 return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
             };
@@ -119,8 +124,8 @@ var onload = function () {
             var myid = s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4() + "-" + s4() + s4() + s4();
             var avatar = 1 + (Math.random() * 20 | 0);
 
-            //var client = $.stormancer(Stormancer.Configuration.forAccount(accountid, appname));
-            var client = $.stormancer(Stormancer.Configuration.forLocalDev(appname));
+            var client = $.stormancer(Stormancer.Configuration.forAccount(accountid, appname));
+            //var client = $.stormancer(Stormancer.Configuration.forLocalDev(appname));
 
             client.getPublicScene(scenename, myid, function (scene) {
                 var players = {};
@@ -134,49 +139,75 @@ var onload = function () {
                 });
 
                 scene.onMessage('User.Remove', function (id) {
-                    delete players[id];
+                    if (id in players) {
+                        if (players[id] != null) {
+                            players[id].markForRemove();
+                        }
+                        delete players[id];
+                    }
                 });
 
-                scene.connect(function () {
-                    setInterval(function () {
-                        //send position
-                    }, 20);
+                scene.onMessage('move', function (position) {
+                    if (position.UserId === myid) {
+                        return;
+                    }
+                    if (position.UserId in players) {
+                        var otherShip = players[position.UserId];
+                        if (otherShip == null) {
+                            // DOES NOT WORK FOR REASON (YET) UNKNOWN
+                            //var otherShip = gameWorld.assetsManager.cloneLoadedEntity("Ship");
+
+                            otherShip = gameWorld.assetsManager.cloneLoadedEntity("Ring");
+                            players[position.UserId] = otherShip;
+                        }
+                        
+                        otherShip.setPosition(new BABYLON.Vector3(position.Position.x, position.Position.y, position.Position.z));
+                        otherShip.setRotation(new BABYLON.Vector3(position.Rotation.x, position.Rotation.y, position.Rotation.z));
+                    }
                 });
+
+            scene.connect(function () {
+                setInterval(function () {
+                    var position = mainShip.getPosition();
+                    var rotation = mainShip.getRotation();
+                    scene.send("move", { Position: { x: position.x, y: position.y, z: position.z }, Rotation: { x: rotation.x, y: rotation.y, z: rotation.z } }, function () {
+                    });
+                }, 20);
             });
+        });
 
 
 
-            LoadParticules();
+        LoadParticules();
 
-            //Create Rings
-            var ring;
+        //Create Rings
+        var ring;
 
-            for (var i = 0; i < 10; i++) {
-                ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
-                var x = Math.floor((Math.random() * 1000) + 1) - 500;
-                var y = Math.floor((Math.random() * 100) + 1);
-                var z = Math.floor((Math.random() * 1000) + 1) - 500;
+        for (var i = 0; i < 10; i++) {
+            ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
+            var x = Math.floor((Math.random() * 1000) + 1) - 500;
+            var y = Math.floor((Math.random() * 100) + 1);
+            var z = Math.floor((Math.random() * 1000) + 1) - 500;
 
-                var rotateX = 0;//Math.floor((Math.random() * 180) + 1);
-                var rotateY = 0;//Math.floor((Math.random() * 180) + 1);
-                var rotateZ = (0 * Math.PI) / 180;
+            var rotateX = 0;//Math.floor((Math.random() * 180) + 1);
+            var rotateY = 0;//Math.floor((Math.random() * 180) + 1);
+            var rotateZ = (0 * Math.PI) / 180;
 
-                ring.setPosition(new BABYLON.Vector3(x, y, z));
-                ring.setRotation(new BABYLON.Vector3(rotateX, rotateY, rotateZ));
+            ring.setPosition(new BABYLON.Vector3(x, y, z));
+            ring.setRotation(new BABYLON.Vector3(rotateX, rotateY, rotateZ));
 
-                //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
-            }
-
-
-            //End Loading
-            gameWorld.dashboard.endLoading();
+            //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
         }
 
-        gameWorld.assetsManager.loadAllEntitiesAsync(sceneReady);
-
-        // Resize
-        window.addEventListener("resize", function () {
-            gameWorld.engine.resize();
-        });
+        //End Loading
+        gameWorld.dashboard.endLoading();
     }
+
+    gameWorld.assetsManager.loadAllEntitiesAsync(sceneReady);
+
+    // Resize
+    window.addEventListener("resize", function () {
+        gameWorld.engine.resize();
+    });
+}
 };
