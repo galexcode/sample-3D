@@ -1,9 +1,10 @@
 ﻿/// <reference path="./scripts/jquery.stormancer.js" />
 
+UpdateIntervals = 200;
 
 var gameWorld;
 var mainShip;
-var ring;
+//var ring;
 var ship;
 
 var onload = function () {
@@ -28,11 +29,11 @@ var onload = function () {
 
         gameWorld.setCameraToFollowEntity(mainShip, new BABYLON.Vector3(0, 10, 30));
 
-        ring = new SpaceRing.Ring(true, gameWorld);
+       // ring = new SpaceRing.Ring(true, gameWorld);
         ship = new SpaceRing.Ship(true, gameWorld);
 
         gameWorld.assetsManager.push(mainShip);
-        gameWorld.assetsManager.push(ring);
+        //gameWorld.assetsManager.push(ring);
         gameWorld.assetsManager.push(ship);
 
         //Ground
@@ -154,15 +155,13 @@ var onload = function () {
                     if (position.UserId in players) {
                         var otherShip = players[position.UserId];
                         if (otherShip == null) {
-                            // DOES NOT WORK FOR REASON (YET) UNKNOWN
-                            //var otherShip = gameWorld.assetsManager.cloneLoadedEntity("Ship");
-
-                            otherShip = gameWorld.assetsManager.cloneLoadedEntity("Ring");
+                            
+                            otherShip = gameWorld.assetsManager.cloneLoadedEntity("Ship");
                             players[position.UserId] = otherShip;
                         }
                         
-                        otherShip.setPosition(new BABYLON.Vector3(position.Position.x, position.Position.y, position.Position.z));
-                        otherShip.setRotation(new BABYLON.Vector3(position.Rotation.x, position.Rotation.y, position.Rotation.z));
+                        otherShip.targetPosition(new BABYLON.Vector3(position.Position.x, position.Position.y, position.Position.z));
+                        otherShip.targetRotation(new BABYLON.Vector3(position.Rotation.x, position.Rotation.y, position.Rotation.z));
                     }
                 });
 
@@ -172,7 +171,7 @@ var onload = function () {
                     var rotation = mainShip.getRotation();
                     scene.send("move", { Position: { x: position.x, y: position.y, z: position.z }, Rotation: { x: rotation.x, y: rotation.y, z: rotation.z } }, function () {
                     });
-                }, 20);
+                }, UpdateIntervals);
             });
         });
 
@@ -181,23 +180,23 @@ var onload = function () {
         LoadParticules();
 
         //Create Rings
-        var ring;
+        //var ring;
 
-        for (var i = 0; i < 10; i++) {
-            ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
-            var x = Math.floor((Math.random() * 1000) + 1) - 500;
-            var y = Math.floor((Math.random() * 100) + 1);
-            var z = Math.floor((Math.random() * 1000) + 1) - 500;
+        //for (var i = 0; i < 10; i++) {
+        //    ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
+        //    var x = Math.floor((Math.random() * 1000) + 1) - 500;
+        //    var y = Math.floor((Math.random() * 100) + 1);
+        //    var z = Math.floor((Math.random() * 1000) + 1) - 500;
 
-            var rotateX = 0;//Math.floor((Math.random() * 180) + 1);
-            var rotateY = 0;//Math.floor((Math.random() * 180) + 1);
-            var rotateZ = (0 * Math.PI) / 180;
+        //    var rotateX = 0;//Math.floor((Math.random() * 180) + 1);
+        //    var rotateY = 0;//Math.floor((Math.random() * 180) + 1);
+        //    var rotateZ = (0 * Math.PI) / 180;
 
-            ring.setPosition(new BABYLON.Vector3(x, y, z));
-            ring.setRotation(new BABYLON.Vector3(rotateX, rotateY, rotateZ));
+        //    ring.setPosition(new BABYLON.Vector3(x, y, z));
+        //    ring.setRotation(new BABYLON.Vector3(rotateX, rotateY, rotateZ));
 
-            //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
-        }
+        //    //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
+        //}
 
         //End Loading
         gameWorld.dashboard.endLoading();
