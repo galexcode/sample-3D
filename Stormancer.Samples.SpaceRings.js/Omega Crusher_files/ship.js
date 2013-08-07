@@ -11,14 +11,16 @@ var SpaceRing;
         __extends(Ship, basedClass);
 
         function Ship(cloneable, gameWorld) {
-            this.initialPosition = new BABYLON.Vector3(0, 0, 10);
-            this.initialScaling = new BABYLON.Vector3(0.4, 0.1, 0.4);
-            this.initialRotation = new BABYLON.Vector3(0, 0, (180 * Math.PI) / 180);
+            this.initialPosition = new BABYLON.Vector3(0, 0, 40);
+            this.initialScaling = new BABYLON.Vector3(0.005, 0.005, 0.005);
+            this.initialRotation = new BABYLON.Vector3(0, 0, 0);
             this._deltaPosition = BABYLON.Vector3.Zero();
             this.deltaRotate = BABYLON.Vector3.Zero();
-            // Calling based class constructor
-            basedClass.call(this, "Gate", "/Scenes/Gate/", "Gate.babylon", this.initialPosition, this.initialRotation, this.initialScaling, cloneable, gameWorld);
 
+            // Calling based class constructor
+            //basedClass.call(this, "Gate", "/Scenes/Gate/", "Gate.babylon", this.initialPosition, this.initialRotation, this.initialScaling, cloneable, gameWorld);
+            
+            basedClass.call(this, "p2_wedge_geo", "/Scenes/Spaceship/", "Spaceship.babylon", this.initialPosition, this.initialRotation, this.initialScaling, cloneable, gameWorld);
         }
 
         Ship.prototype.loaded = function (meshes, particuleSystems) {

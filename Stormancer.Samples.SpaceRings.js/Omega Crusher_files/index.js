@@ -5,7 +5,7 @@ UpdateIntervals = 200;
 var gameWorld;
 var mainShip;
 //var ring;
-var ship;
+//var ship;
 
 var onload = function () {
     var accountid = "6a575873-eed0-4564-af84-58b516b1f624";
@@ -29,12 +29,12 @@ var onload = function () {
 
         gameWorld.setCameraToFollowEntity(mainShip, new BABYLON.Vector3(0, 10, 30));
 
-       // ring = new SpaceRing.Ring(true, gameWorld);
-        ship = new SpaceRing.Ship(true, gameWorld);
+        // ring = new SpaceRing.Ring(true, gameWorld);
+        //ship = new SpaceRing.Ship(true, gameWorld);
 
         gameWorld.assetsManager.push(mainShip);
         //gameWorld.assetsManager.push(ring);
-        gameWorld.assetsManager.push(ship);
+        //gameWorld.assetsManager.push(ship);
 
         //Ground
         var ground = BABYLON.Mesh.CreatePlane("plane", 1000, gameWorld.scene);
@@ -100,7 +100,7 @@ var onload = function () {
         }
 
         function sceneReady() {
-
+            gameWorld.assetsManager._sceneReady = function () { };
 
             gameWorld.startGameLoop();
 
@@ -155,58 +155,59 @@ var onload = function () {
                     if (position.UserId in players) {
                         var otherShip = players[position.UserId];
                         if (otherShip == null) {
-                            
-                            otherShip = gameWorld.assetsManager.cloneLoadedEntity("Ship");
+                            otherShip = new SpaceRing.Ship(false, gameWorld);
+                            otherShip.loadMesh(gameWorld.scene, null, 0);
                             players[position.UserId] = otherShip;
                         }
-                        
-                        otherShip.targetPosition(new BABYLON.Vector3(position.Position.x, position.Position.y, position.Position.z));
-                        otherShip.targetRotation(new BABYLON.Vector3(position.Rotation.x, position.Rotation.y, position.Rotation.z));
+                        if (otherShip.isReady) {
+                            otherShip.targetPosition(new BABYLON.Vector3(position.Position.x, position.Position.y, position.Position.z));
+                            otherShip.targetRotation(new BABYLON.Vector3(position.Rotation.x, position.Rotation.y, position.Rotation.z));
+                        }
                     }
                 });
 
-            scene.connect(function () {
-                setInterval(function () {
-                    var position = mainShip.getPosition();
-                    var rotation = mainShip.getRotation();
-                    scene.send("move", { Position: { x: position.x, y: position.y, z: position.z }, Rotation: { x: rotation.x, y: rotation.y, z: rotation.z } }, function () {
-                    });
-                }, UpdateIntervals);
+                scene.connect(function () {
+                    setInterval(function () {
+                        var position = mainShip.getPosition();
+                        var rotation = mainShip.getRotation();
+                        scene.send("move", { Position: { x: position.x, y: position.y, z: position.z }, Rotation: { x: rotation.x, y: rotation.y, z: rotation.z } }, function () {
+                        });
+                    }, UpdateIntervals);
+                });
             });
+
+
+
+            LoadParticules();
+
+            //Create Rings
+            //var ring;
+
+            //for (var i = 0; i < 10; i++) {
+            //    ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
+            //    var x = Math.floor((Math.random() * 1000) + 1) - 500;
+            //    var y = Math.floor((Math.random() * 100) + 1);
+            //    var z = Math.floor((Math.random() * 1000) + 1) - 500;
+
+            //    var rotateX = 0;//Math.floor((Math.random() * 180) + 1);
+            //    var rotateY = 0;//Math.floor((Math.random() * 180) + 1);
+            //    var rotateZ = (0 * Math.PI) / 180;
+
+            //    ring.setPosition(new BABYLON.Vector3(x, y, z));
+            //    ring.setRotation(new BABYLON.Vector3(rotateX, rotateY, rotateZ));
+
+            //    //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
+            //}
+
+            //End Loading
+            gameWorld.dashboard.endLoading();
+        }
+
+        gameWorld.assetsManager.loadAllEntitiesAsync(sceneReady);
+
+        // Resize
+        window.addEventListener("resize", function () {
+            gameWorld.engine.resize();
         });
-
-
-
-        LoadParticules();
-
-        //Create Rings
-        //var ring;
-
-        //for (var i = 0; i < 10; i++) {
-        //    ring = gameWorld.assetsManager.cloneLoadedEntity("Ring");
-        //    var x = Math.floor((Math.random() * 1000) + 1) - 500;
-        //    var y = Math.floor((Math.random() * 100) + 1);
-        //    var z = Math.floor((Math.random() * 1000) + 1) - 500;
-
-        //    var rotateX = 0;//Math.floor((Math.random() * 180) + 1);
-        //    var rotateY = 0;//Math.floor((Math.random() * 180) + 1);
-        //    var rotateZ = (0 * Math.PI) / 180;
-
-        //    ring.setPosition(new BABYLON.Vector3(x, y, z));
-        //    ring.setRotation(new BABYLON.Vector3(rotateX, rotateY, rotateZ));
-
-        //    //ring._mesh.material.emissiveColor = new BABYLON.Color4(0.9, 0.1, 0.1, 1);
-        //}
-
-        //End Loading
-        gameWorld.dashboard.endLoading();
     }
-
-    gameWorld.assetsManager.loadAllEntitiesAsync(sceneReady);
-
-    // Resize
-    window.addEventListener("resize", function () {
-        gameWorld.engine.resize();
-    });
-}
 };
